@@ -1,0 +1,14 @@
+.cumulus/
+.playwright-mcp/
+.DS_Store
+node_modules/
+dist/
+engineering-*.png
+.env
+.env.*
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tsbuildinfo

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Eval Engineering Pipeline Orchestrator"
+  short_description: "Validate the engineering pipeline orchestrator agent contract."
+  default_prompt: "Evaluate the engineering pipeline orchestrator agent and report contract gaps."

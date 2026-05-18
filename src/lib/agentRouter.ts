@@ -1,7 +1,9 @@
-import type { AgentPackage, PipelineStage, RouteResult, ToolCall } from "../types";
-import { agentPackages } from "../data/seed";
+import type { AgentPackage, PipelineStage, RouteResult, SourceFile, ToolCall } from "../types";
+import { agentPackages, defaultOutputs } from "../data/seed";
 
-const stageTemplates: Record<string, PipelineStage[]> = {
+type RouteKey = "visual" | "data" | "skill" | "review" | "default";
+
+const stageTemplates: Record<RouteKey, PipelineStage[]> = {
   visual: [
     stage("source-inventory", "Source inventory", "plan-spatial-anchor-agent", "ready", "Hash inputs and label source confidence."),
     stage("spatial-anchor", "Spatial anchoring", "plan-spatial-anchor-agent", "running", "Extract rooms, walls, openings, fixtures, and scale."),
@@ -31,10 +33,14 @@ const stageTemplates: Record<string, PipelineStage[]> = {
   ],
 };
 
-export function routeEngineeringRequest(input: string): RouteResult {
+export function routeEngineeringRequest(input: string, files: SourceFile[] = []): RouteResult {
   const text = input.toLowerCase();
-  const wantsVisual = matches(text, ["3d", "render", "visual", "blender", "model", "scene", "plan"]);
-  const wantsData = matches(text, ["excel", "spreadsheet", "quantity", "schedule", "graph", "data", "csv"]);
+  const fileText = files.map((file) => `${file.name} ${file.extension} ${file.type}`).join(" ").toLowerCase();
+  const combined = `${text} ${fileText}`;
+  const hasPlanFile = files.some((file) => ["pdf", "dwg", "dxf", "ifc", "svg", "png", "jpg", "jpeg"].includes(file.extension));
+  const hasDataFile = files.some((file) => ["csv", "xlsx", "xls", "json"].includes(file.extension));
+  const wantsVisual = hasPlanFile || matches(text, ["3d", "render", "visual", "blender", "model", "scene", "plan", "floor"]);
+  const wantsData = hasDataFile || matches(combined, ["excel", "spreadsheet", "quantity", "schedule", "graph", "data", "csv", "xlsx"]);
   const wantsSkill = matches(text, ["skill", "workflow", "reusable", "agent package", "agent-package"]);
   const wantsReview = matches(text, ["qc", "review", "compare", "failure", "unsupported", "validate"]);
 
@@ -45,6 +51,7 @@ export function routeEngineeringRequest(input: string): RouteResult {
       response: "I routed this to a QC pass. The package must inspect real deliverables, source files, and manifests before any ready claim.",
       packages: ["visualization-qc", "pipeline-orchestrator"],
       skills: ["agent-pipeline", "eval-end-to-end"],
+      files,
     });
   }
 
@@ -55,6 +62,7 @@ export function routeEngineeringRequest(input: string): RouteResult {
       response: "I routed this to a skill creation flow. It will define trigger examples, reusable resources, validation, and a handoff path for future Codex sessions.",
       packages: ["pipeline-orchestrator", "format-output-builder"],
       skills: ["skill-creator", "agent-package"],
+      files,
     });
   }
 
@@ -65,6 +73,7 @@ export function routeEngineeringRequest(input: string): RouteResult {
       response: "I routed this to a data-output pipeline. It will extract source-backed plan data, then prepare workbook, graph, and agent-readable outputs.",
       packages: ["plan-spatial-anchor", "format-output-builder", "visualization-qc"],
       skills: ["spreadsheets", "agent-pipeline", "agent-package"],
+      files,
     });
   }
 
@@ -75,6 +84,7 @@ export function routeEngineeringRequest(input: string): RouteResult {
       response: "I routed this to the plan visualization pipeline. It starts with source inventory and spatial anchoring, then creates a 3D-ready scene contract and QC gate.",
       packages: ["plan-spatial-anchor", "format-output-builder", "visualization-qc"],
       skills: ["agent-pipeline", "agent-package", "cad-to-blender-pipeline-agent"],
+      files,
     });
   }
 
@@ -84,15 +94,17 @@ export function routeEngineeringRequest(input: string): RouteResult {
     response: "I routed this to the orchestrator first. The next step is to classify source files, output type, and whether a specialist package or new skill is needed.",
     packages: ["pipeline-orchestrator"],
     skills: ["agent-pipeline", "auto-mode-trust"],
+    files,
   });
 }
 
 function buildRoute(args: {
-  key: keyof typeof stageTemplates;
+  key: RouteKey;
   title: string;
   response: string;
   packages: string[];
   skills: string[];
+  files: SourceFile[];
 }): RouteResult {
   const packages = args.packages
     .map((id) => agentPackages.find((pkg) => pkg.id === id))
@@ -105,12 +117,13 @@ function buildRoute(args: {
     stages: stageTemplates[args.key],
     packages,
     skills: args.skills,
-    toolCalls: toolCallsFor(args.title, packages, args.skills),
+    outputs: defaultOutputs(args.key),
+    toolCalls: toolCallsFor(args.title, packages, args.skills, args.files),
   };
 }
 
-function toolCallsFor(title: string, packages: AgentPackage[], skills: string[]): ToolCall[] {
-  return [
+function toolCallsFor(title: string, packages: AgentPackage[], skills: string[], files: SourceFile[]): ToolCall[] {
+  const calls: ToolCall[] = [
     {
       id: crypto.randomUUID(),
       name: "codex_use.pipeline_select",
@@ -133,6 +146,26 @@ function toolCallsFor(title: string, packages: AgentPackage[], skills: string[])
       status: "complete",
     },
   ];
+
+  if (files.length > 0) {
+    calls.unshift({
+      id: crypto.randomUUID(),
+      name: "codex_use.file_ingest",
+      input: JSON.stringify({
+        files: files.map((file) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type || "unknown",
+          extension: file.extension || "none",
+          preview: file.preview ? file.preview.slice(0, 180) : undefined,
+        })),
+      }, null, 2),
+      output: `${files.length} source file${files.length === 1 ? "" : "s"} attached to the run contract`,
+      status: "complete",
+    });
+  }
+
+  return calls;
 }
 
 function stage(
@@ -148,4 +181,3 @@ function stage(
 function matches(input: string, needles: string[]): boolean {
   return needles.some((needle) => input.includes(needle));
 }
-

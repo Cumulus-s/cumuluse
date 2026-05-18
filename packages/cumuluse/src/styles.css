@@ -1,0 +1,414 @@
+:root,
+:root[data-cumuluse-theme="ink"] {
+  --cumuluse-ink: #f5f5f5;
+  --cumuluse-ink-muted: rgba(245, 245, 245, 0.68);
+  --cumuluse-ink-soft: rgba(245, 245, 245, 0.44);
+  --cumuluse-paper: #1a1a1a;
+  --cumuluse-panel: #101010;
+  --cumuluse-panel-2: #171717;
+  --cumuluse-line: rgba(245, 245, 245, 0.13);
+  --cumuluse-line-strong: rgba(245, 245, 245, 0.24);
+  --cumuluse-accent: #a44718;
+  --cumuluse-accent-soft: rgba(164, 71, 24, 0.18);
+  --cumuluse-radius: 5.5px;
+  --cumuluse-font: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+:root[data-cumuluse-theme="paper"] {
+  --cumuluse-ink: #1a1a1a;
+  --cumuluse-ink-muted: rgba(26, 26, 26, 0.68);
+  --cumuluse-ink-soft: rgba(26, 26, 26, 0.44);
+  --cumuluse-paper: #f5f5f5;
+  --cumuluse-panel: #ffffff;
+  --cumuluse-panel-2: #eeeeec;
+  --cumuluse-line: rgba(26, 26, 26, 0.13);
+  --cumuluse-line-strong: rgba(26, 26, 26, 0.24);
+  --cumuluse-accent-soft: rgba(164, 71, 24, 0.12);
+}
+
+.cumuluse {
+  color: var(--cumuluse-ink);
+  font-family: var(--cumuluse-font);
+  letter-spacing: 0;
+}
+
+.cumuluse * {
+  box-sizing: border-box;
+}
+
+.cumuluse button,
+.cumuluse textarea,
+.cumuluse input {
+  font: inherit;
+}
+
+.cumuluse__rail {
+  position: fixed;
+  left: 0;
+  top: 42vh;
+  z-index: 9997;
+  width: 38px;
+  height: 108px;
+  border: 1px solid var(--cumuluse-line);
+  border-left: 0;
+  border-radius: 0 var(--cumuluse-radius) var(--cumuluse-radius) 0;
+  color: var(--cumuluse-ink);
+  background: var(--cumuluse-panel);
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.cumuluse[data-open="true"] .cumuluse__rail {
+  display: none;
+}
+
+.cumuluse__drawer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 9998;
+  width: min(430px, calc(100vw - 18px));
+  background: var(--cumuluse-panel);
+  border-right: 1px solid var(--cumuluse-line-strong);
+  transform: translateX(-101%);
+  transition: transform 180ms ease;
+  display: grid;
+  grid-template-rows: auto auto auto auto 1fr auto auto;
+  min-height: 0;
+}
+
+.cumuluse[data-open="true"] .cumuluse__drawer {
+  transform: translateX(0);
+}
+
+.cumuluse__header,
+.cumuluse__status,
+.cumuluse__run,
+.cumuluse__composer {
+  border-bottom: 1px solid var(--cumuluse-line);
+}
+
+.cumuluse__header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 14px 14px 16px;
+}
+
+.cumuluse__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cumuluse__brand strong {
+  display: block;
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.cumuluse__brand span:last-child {
+  display: block;
+  color: var(--cumuluse-ink-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 4px;
+}
+
+.cumuluse__brand-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--cumuluse-accent);
+  display: inline-block;
+}
+
+.cumuluse__header-actions,
+.cumuluse__composer footer,
+.cumuluse__approvals footer,
+.cumuluse__run-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cumuluse__icon,
+.cumuluse__ghost,
+.cumuluse__send,
+.cumuluse__danger,
+.cumuluse__approvals button {
+  border: 1px solid var(--cumuluse-line);
+  border-radius: var(--cumuluse-radius);
+  color: var(--cumuluse-ink);
+  background: transparent;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.cumuluse__icon {
+  width: 34px;
+}
+
+.cumuluse__ghost {
+  padding: 0 10px;
+}
+
+.cumuluse__send {
+  padding: 0 14px;
+  background: var(--cumuluse-ink);
+  color: var(--cumuluse-paper);
+  border-color: var(--cumuluse-ink);
+}
+
+.cumuluse__danger {
+  padding: 0 12px;
+  border-color: var(--cumuluse-accent);
+  color: var(--cumuluse-accent);
+}
+
+.cumuluse__send:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.cumuluse__status {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  color: var(--cumuluse-ink-muted);
+}
+
+.cumuluse__status svg {
+  color: var(--cumuluse-accent);
+}
+
+.cumuluse__status strong,
+.cumuluse__run strong,
+.cumuluse__empty strong,
+.cumuluse__approvals strong {
+  color: var(--cumuluse-ink);
+  font-size: 13px;
+}
+
+.cumuluse__status span,
+.cumuluse__run span,
+.cumuluse__empty span {
+  color: var(--cumuluse-ink-muted);
+  font-size: 12px;
+}
+
+.cumuluse__notice {
+  margin: 12px 14px 0;
+  border: 1px solid var(--cumuluse-line);
+  border-radius: var(--cumuluse-radius);
+  padding: 11px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px;
+  color: var(--cumuluse-ink-muted);
+  background: var(--cumuluse-accent-soft);
+}
+
+.cumuluse__notice p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.cumuluse code {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  border: 1px solid var(--cumuluse-line);
+  border-radius: var(--cumuluse-radius);
+  padding: 8px;
+  color: var(--cumuluse-ink);
+  background: var(--cumuluse-paper);
+  font-size: 11px;
+  overflow-x: auto;
+}
+
+.cumuluse__run {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.cumuluse__badge {
+  border: 1px solid var(--cumuluse-line);
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: var(--cumuluse-ink-muted);
+  font-size: 11px;
+}
+
+.cumuluse__badge[data-status="running"],
+.cumuluse__badge[data-status="waiting_for_approval"] {
+  border-color: var(--cumuluse-accent);
+  color: var(--cumuluse-accent);
+}
+
+.cumuluse__approvals {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cumuluse-line);
+}
+
+.cumuluse__approvals article {
+  border: 1px solid var(--cumuluse-accent);
+  border-radius: var(--cumuluse-radius);
+  padding: 12px;
+  background: var(--cumuluse-accent-soft);
+}
+
+.cumuluse__approvals p {
+  color: var(--cumuluse-ink-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.cumuluse__approvals button {
+  padding: 0 10px;
+}
+
+.cumuluse__turns {
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cumuluse__empty {
+  min-height: 220px;
+  border: 1px solid var(--cumuluse-line);
+  border-radius: var(--cumuluse-radius);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 24px;
+  color: var(--cumuluse-accent);
+}
+
+.cumuluse__empty span {
+  max-width: 280px;
+}
+
+.cumuluse__turn {
+  border: 1px solid var(--cumuluse-line);
+  border-radius: var(--cumuluse-radius);
+  padding: 12px;
+  background: var(--cumuluse-panel-2);
+}
+
+.cumuluse__turn p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.cumuluse__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.cumuluse__chips span {
+  border: 1px solid var(--cumuluse-line);
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: var(--cumuluse-ink-muted);
+  font-size: 11px;
+}
+
+.cumuluse__events {
+  border: 1px solid var(--cumuluse-line);
+  border-radius: var(--cumuluse-radius);
+  padding: 10px 12px;
+}
+
+.cumuluse__events summary {
+  cursor: pointer;
+  color: var(--cumuluse-ink-muted);
+  font-size: 12px;
+}
+
+.cumuluse__event {
+  margin-top: 10px;
+  border-top: 1px solid var(--cumuluse-line);
+  padding-top: 10px;
+}
+
+.cumuluse__event span {
+  color: var(--cumuluse-accent);
+  font-size: 11px;
+}
+
+.cumuluse__event p,
+.cumuluse__error {
+  margin: 4px 0 0;
+  color: var(--cumuluse-ink-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.cumuluse__error {
+  margin: 0 14px 12px;
+  color: var(--cumuluse-accent);
+}
+
+.cumuluse__composer {
+  padding: 14px;
+  border-top: 1px solid var(--cumuluse-line);
+  border-bottom: 0;
+  background: var(--cumuluse-panel);
+}
+
+.cumuluse__composer input[type="file"] {
+  display: none;
+}
+
+.cumuluse__composer textarea {
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  border: 1px solid var(--cumuluse-line);
+  border-radius: var(--cumuluse-radius);
+  color: var(--cumuluse-ink);
+  background: var(--cumuluse-paper);
+  padding: 11px;
+  outline: none;
+}
+
+.cumuluse__composer textarea:focus,
+.cumuluse button:focus-visible,
+.cumuluse__events:focus-within {
+  outline: 2px solid var(--cumuluse-accent);
+  outline-offset: 2px;
+}
+
+.cumuluse__composer footer {
+  margin-top: 10px;
+  justify-content: space-between;
+}
+
+@media (max-width: 520px) {
+  .cumuluse__drawer {
+    width: 100vw;
+  }
+}

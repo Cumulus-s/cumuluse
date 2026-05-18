@@ -8,6 +8,19 @@
 - [x] Add plan workspace and output status.
 - [x] Add pipeline start and handoff prompts.
 - [x] Add project-local orchestrator agent and deterministic eval skill.
-- [ ] Add real backend process execution.
-- [ ] Add file upload and parser adapters for PDF, DWG, DXF, IFC, CSV, and XLSX.
-- [ ] Add typed stage manifest writer.
+- [x] Make workspace tabs switch real surfaces.
+- [x] Add file attachments through the Codex Use panel composer.
+- [x] Attach uploaded source-file metadata to pipeline run state.
+- [x] Add Python-first real backend execution foundation with Codex app-server primary path and `codex exec --json` fallback.
+- [x] Add tiered upload ingestion for text, CSV, JSON, SVG, XLSX, optional PDF extraction, and metadata-only CAD/IFC/images.
+- [x] Add typed stage manifest writer.
+- [x] Add shared TypeScript contracts for reusable Use panel packages.
+- [x] Add reusable React panel package foundation.
+- [x] Add basic Node backend package with upload/run/SSE/cancel contracts.
+- [x] Add Python backend package with SQLite WAL state, manifests, CLI detection, redaction, approvals, diagnostics, FastAPI/SSE/WebSocket API, Codex app-server adapter, and tests.
+- [x] Add `cumuluse` npm package with provider, panel, client, branded CSS, and CLI.
+- [x] Add `npx cumuluse init` generated integration files, managed venv setup, scripts, and tests.
+- [x] Rebrand Python package metadata and import surface to `cumuluse-backend` / `cumuluse_backend` with compatibility aliases.
+- [x] Document Tado Use learnings, package architecture, local Codex status, and stage manifest schema.
+- [ ] Wire the current Engineering drawer to the backend endpoints.
+- [ ] Add deep parsers for PDF, CAD, IFC, and workbook ingestion.

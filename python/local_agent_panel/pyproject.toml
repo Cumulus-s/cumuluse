@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cumuluse-backend"
+version = "0.1.0"
+description = "Durable local Python backend for the Cumuluse Codex and Claude Code panel."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Cumuluse" }]
+license = "MIT"
+dependencies = []
+
+[project.optional-dependencies]
+server = ["fastapi>=0.115", "uvicorn>=0.30"]
+ingest = ["pypdf>=5"]
+test = ["pytest>=8", "httpx>=0.28"]
+
+[project.scripts]
+cumuluse-backend = "cumuluse_backend.cli:main"
+agent-panel = "local_agent_panel.cli:main"
+
+[project.urls]
+Homepage = "https://www.npmjs.com/package/cumuluse"
+Changelog = "https://www.npmjs.com/package/cumuluse"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

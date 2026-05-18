@@ -3,6 +3,16 @@
 .DS_Store
 node_modules/
 dist/
+.agent-panel/
+.cumuluse/venv/
+.cumuluse/backend/
+.cumuluse/cache/
+.cumuluse/logs/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
 engineering-*.png
 .env
 .env.*

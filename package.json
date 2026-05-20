@@ -1,6 +1,8 @@
 {
-  "name": "engineering-visualizer",
+  "name": "cumuluse-repo",
   "version": "0.1.0",
+  "description": "Local Codex and Claude Code panel for React apps, with a durable Python backend.",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "workspaces": [
